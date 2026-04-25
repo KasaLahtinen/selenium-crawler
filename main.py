@@ -15,8 +15,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 app = FastAPI(title="Selenium AI Crawler")
 client = genai.Client()
 
+
 class ResolveRequest(BaseModel):
     url: str
+
 
 def get_safety_settings():
     return [
@@ -29,6 +31,7 @@ def get_safety_settings():
             threshold=types.HarmBlockThreshold.OFF,
         ),
     ]
+
 
 @app.post("/resolve")
 def resolve_url(req: ResolveRequest):
@@ -47,8 +50,7 @@ def resolve_url(req: ResolveRequest):
     driver = None
     try:
         driver = webdriver.Remote(
-            command_executor=os.environ.get("SELENIUM_URL", "http://localhost:4444/wd/hub"),
-            options=options
+            command_executor=os.environ.get("SELENIUM_URL", "http://localhost:4444/wd/hub"), options=options
         )
         driver.get(req.url)
         time.sleep(3)  # Give initial JS time to load
@@ -79,16 +81,14 @@ def resolve_url(req: ResolveRequest):
         btn_response = client.models.generate_content(
             model="gemma-3-27b-it",
             contents=[prompt_btn],
-            config=types.GenerateContentConfig(safety_settings=get_safety_settings())
+            config=types.GenerateContentConfig(safety_settings=get_safety_settings()),
         )
 
         selector = btn_response.text.strip().replace("`", "")
         logger.debug(f"AI suggested cookie button selector: {selector}")
         if selector and selector != "NONE":
             try:
-                element = WebDriverWait(driver, 5).until(
-                    EC.presence_of_element_located((By.CSS_SELECTOR, selector))
-                )
+                element = WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, selector)))
                 # Use JavaScript click to bypass transparent overlays or animations
                 driver.execute_script("arguments[0].click();", element)
                 logger.debug(f"Clicked {selector} via JS. Waiting for redirect and SPA load...")
@@ -109,7 +109,7 @@ def resolve_url(req: ResolveRequest):
         summary_response = client.models.generate_content(
             model="gemma-3-27b-it",
             contents=[prompt_summary],
-            config=types.GenerateContentConfig(safety_settings=get_safety_settings())
+            config=types.GenerateContentConfig(safety_settings=get_safety_settings()),
         )
 
         return {"summary": summary_response.text.strip()}

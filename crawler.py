@@ -19,8 +19,7 @@ response_stream = client.models.generate_content_stream(
                 threshold=types.HarmBlockThreshold.OFF,
             ),
         ]
-
-    )
+    ),
 )
 
 for chunk in response_stream:

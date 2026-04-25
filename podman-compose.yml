@@ -6,6 +6,11 @@ services:
     shm_size: 2gb
     ports:
       - "4444:4444"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/wd/hub/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     restart: unless-stopped
 
   api:
@@ -18,7 +23,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - selenium
+      selenium:
+        condition: service_healthy
     restart: unless-stopped
 
   bot:
@@ -31,5 +37,6 @@ services:
     volumes:
       - ./Gemini-IRC-bot/config.yaml:/app/Gemini-IRC-bot/config.yaml:ro
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     restart: unless-stopped

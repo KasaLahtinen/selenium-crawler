@@ -7,4 +7,8 @@ COPY Gemini-IRC-bot/ ./Gemini-IRC-bot/
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app/Gemini-IRC-bot
 STOPSIGNAL SIGINT
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD python -c "import psutil; import sys; sys.exit(0 if any('bot.py' in p.cmdline() for p in psutil.process_iter(['cmdline'])) else 1)"
+
 CMD ["python", "bot.py"]
