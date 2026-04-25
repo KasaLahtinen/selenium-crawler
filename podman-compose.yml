@@ -42,6 +42,7 @@ services:
       - CRAWLER_API_URL=http://api:8000/resolve
     volumes:
       - ./Gemini-IRC-bot/config.yaml:/app/Gemini-IRC-bot/config.yaml:ro
+      - bot-data:/app/data
     healthcheck:
       test: ["CMD-SHELL", "python -c \"import psutil; import sys; sys.exit(0 if any('bot.py' in p.cmdline() for p in psutil.process_iter(['cmdline'])) else 1)\""]
       interval: 30s
@@ -52,3 +53,28 @@ services:
       api:
         condition: service_healthy
     restart: unless-stopped
+
+  telegram-bot:
+    build:
+      context: .
+      dockerfile: Containerfile.bot
+    command: ["python", "telegram_bot.py"]
+    env_file: .env
+    environment:
+      - CRAWLER_API_URL=http://api:8000/resolve
+    volumes:
+      - ./Gemini-IRC-bot/config.yaml:/app/Gemini-IRC-bot/config.yaml:ro
+      - bot-data:/app/data
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import psutil; import sys; sys.exit(0 if any('telegram_bot.py' in p.cmdline() for p in psutil.process_iter(['cmdline'])) else 1)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  bot-data:

@@ -1,8 +1,8 @@
-FROM docker.io/library/python:3.11-slim
+FROM docker.io/library/python:3.11-alpine
 
 # Best Practice: Explicit high UID/GID, no home directory, and no login shell.
-RUN groupadd -g 10001 appuser && \
-    useradd -u 10001 -g appuser --no-create-home -s /sbin/nologin -c "App User" appuser
+RUN addgroup -g 10001 appuser && \
+    adduser -u 10001 -G appuser -s /sbin/nologin -D -H appuser
 
 WORKDIR /app
 COPY Gemini-IRC-bot/requirements.txt .
