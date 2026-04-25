@@ -20,6 +20,25 @@ The project is split into three interconnected container services:
 2. **api**: A FastAPI service that manages the heavy crawler queue and interacts with the remote browser.
 3. **selenium**: An official `docker.io/selenium/standalone-chromium` container that provides a remote WebDriver for the API to control.
 
+## 📁 Project Structure
+
+Below is a breakdown of the key files and directories found in the root of the project:
+
+- **`cli.py`**: The primary Python command-line interface for managing the stack (`start`, `stop`, `restart`, `logs`). It provides a clean, user-friendly output and orchestrates the containers.
+- **`main.py`**: The FastAPI backend application that receives URL requests and manages the queue for the heavy Selenium scraper.
+- **`crawler.py`**: Contains the core Selenium Webdriver logic and AI summarization used by the API to process Javascript-heavy websites.
+- **`podman-compose.yml`**: The orchestration file that defines the multi-container environment (`api`, `bot`, `telegram-bot`, `selenium`).
+- **`Containerfile.api`** & **`Containerfile.bot`**: The OCI-compliant build instructions (Dockerfiles) for the Alpine-based API and IRC/Telegram Bot images respectively.
+- **`Gemini-IRC-bot/`**: A Git submodule containing the core IRC and Telegram bot logic, SQLite caching, and URL parsing mechanisms.
+- **`requirements.txt`** & **`requirements.in`**: Pinned Python dependencies for the API service with secure hashes.
+- **`pyproject.toml`**: Python project configuration (e.g., formatting and linting tools like Ruff).
+- **`.env`**: Contains environment variables such as API keys and bot tokens.
+- **`.gitmodules`**: Git configuration linking the `Gemini-IRC-bot` submodule to the parent repository.
+- **`containers.conf`**: Configuration for container behavior.
+- **`manage.sh`**: A historic bash wrapper script used previously to manage the multi-container environment (now superseded by `cli.py`).
+- **`start-pod.sh`** & **`stop-pod.sh`**: Historic shell scripts retained for reference/notes on starting and stopping pods manually.
+- **`fix_bot.py`** & **`github_init.sh`**: One-off historic utility scripts retained for later reference.
+
 ## ⚙️ Prerequisites
 
 - **Podman** or **Docker**
