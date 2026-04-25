@@ -4,7 +4,7 @@ A powerful, robust IRC bot that detects URLs in chat channels and automatically 
 
 [![Trivy Container Vulnerability Scanner](https://github.com/KasaLahtinen/selenium-crawler/actions/workflows/trivy.yml/badge.svg)](https://github.com/KasaLahtinen/selenium-crawler/actions/workflows/trivy.yml)
 [![CodeQL Vulnerability Scanning](https://github.com/KasaLahtinen/selenium-crawler/actions/workflows/codeql.yml/badge.svg)](https://github.com/KasaLahtinen/selenium-crawler/actions/workflows/codeql.yml)
-
+[![OSV-Scanner](https://github.com/KasaLahtinen/selenium-crawler/actions/workflows/osv-scanner.yml/badge.svg)](https://github.com/KasaLahtinen/selenium-crawler/actions/workflows/osv-scanner.yml)
 ## 🚀 Features
 
 - **Hybrid Scraping Architecture**: 
