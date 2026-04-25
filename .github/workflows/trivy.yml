@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Build API image
         run: docker build -t api:${{ github.sha }} -f Containerfile.api .
