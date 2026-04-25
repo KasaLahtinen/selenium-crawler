@@ -1,0 +1,3 @@
+[submodule "Gemini-IRC-bot"]
+	path = Gemini-IRC-bot
+	url = https://github.com/KasaLahtinen/Gemini-IRC-bot.git
