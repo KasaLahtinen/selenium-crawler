@@ -2,6 +2,8 @@
 
 A powerful, robust IRC bot that detects URLs in chat channels and automatically generates rich link previews. Built with Python, it utilizes a hybrid scraping architecture: a blazingly fast `BeautifulSoup` miniscraper for standard static web pages, backed by a heavyweight headless Selenium crawler powered by an AI language model for Javascript-rendered sites and cookie walls.
 
+[![Trivy Container Vulnerability Scanner](https://github.com/KasaLahtinen/selenium-crawler/actions/workflows/trivy.yml/badge.svg)](https://github.com/KasaLahtinen/selenium-crawler/actions/workflows/trivy.yml)
+
 ## 🚀 Features
 
 - **Hybrid Scraping Architecture**: 
