@@ -7,18 +7,21 @@ A powerful, robust IRC bot that detects URLs in chat channels and automatically 
 - **Hybrid Scraping Architecture**: 
   - Uses `requests` and `BeautifulSoup` for instant HTML parsing.
   - Automatically falls back to a headless Chromium Selenium instance running behind a FastAPI wrapper when cookie walls or Javascript rendering are detected.
+- **Local Threat Detection**: Protects channels by instantly checking posted URLs against a local SQLite database synced with industry-standard threat feeds (e.g., URLhaus) to block malware distribution.
+- **Telegram Cross-Publishing**: Automatically mirrors IRC URL previews into configured Telegram chats using a unified SQLite broadcast queue.
 - **Explicit Heavy Commands**: Users can force the AI crawler to fetch a URL using the `!heavy <url>` command.
 - **SQLite Caching**: Link previews are cached in a lightweight SQLite database for 24 hours, dramatically reducing redundant network requests.
 - **Rate Limiting Protection**: Built-in cooldowns protect against IRC excess-flood disconnects (5 seconds for standard scrapes, 30 seconds for heavy scrapes).
-- **Containerized Orchestration**: The entire stack is containerized and orchestrated with Podman/Docker Compose, complete with automatic healthchecks and dependent startup sequencing.
+- **Containerized Orchestration**: The entire stack is orchestrated with Podman/Docker Compose and uses hardened Alpine-based images for enhanced security.
 
 ## 🏗️ Architecture
 
-The project is split into three interconnected container services:
+The project is split into four interconnected container services:
 
-1. **bot**: The Python IRC bot (using standard sockets) that connects to IRC, listens for URLs, handles caching and rate-limiting, and queries the API for heavy URLs.
-2. **api**: A FastAPI service that manages the heavy crawler queue and interacts with the remote browser.
-3. **selenium**: An official `docker.io/selenium/standalone-chromium` container that provides a remote WebDriver for the API to control.
+1. **bot**: The Python IRC bot that connects to IRC, listens for URLs, handles threat-checking, and queries the API. It places results into a shared SQLite broadcast queue.
+2. **telegram-bot**: A Python Telegram bot that consumes the shared SQLite broadcast queue and relays URL previews to configured Telegram chats.
+3. **api**: A FastAPI service that manages the heavy crawler queue and interacts with the remote browser.
+4. **selenium**: An official `docker.io/selenium/standalone-chromium` container that provides a remote WebDriver for the API to control.
 
 ## 📁 Project Structure
 
@@ -57,15 +60,20 @@ Below is a breakdown of the key files and directories found in the root of the p
    - Edit the IRC configuration in `Gemini-IRC-bot/config.yaml` to set your bot's nickname, server, and channels to join.
 
 3. **Start the Stack**:
-   Use the provided management script to spin up the entire multi-container environment:
+   Use the provided Python CLI tool to spin up the entire multi-container environment:
    ```bash
-   ./manage.sh start
+   ./cli.py stack up
    ```
    *Note: The bot container will wait automatically until the Selenium browser and the API are fully healthy before connecting to your IRC server.*
 
 4. **Stop the Stack**:
    ```bash
-   ./manage.sh stop
+   ./cli.py stack down
+   ```
+
+5. **View Logs**:
+   ```bash
+   ./cli.py stack logs
    ```
 
 ## 📖 Usage
