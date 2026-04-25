@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+selenium
+google-genai
+python-dotenv
+beautifulsoup4
+requests
+
+# From Gemini-IRC-bot:
+pyyaml
+psutil
+chardet
+validators
+loguru
+ruff

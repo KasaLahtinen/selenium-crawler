@@ -1,10 +1,24 @@
 FROM docker.io/library/python:3.11-slim
+
+# Best Practice: Explicit high UID/GID, no home directory, and no login shell.
+RUN groupadd -g 10001 appuser && \
+    useradd -u 10001 -g appuser --no-create-home -s /sbin/nologin -c "App User" appuser
+
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --require-hashes --no-cache-dir -r requirements.txt
+
+# Best Practice: Source code should be owned by root and read-only for the appuser.
 COPY Gemini-IRC-bot/ ./Gemini-IRC-bot/
 
+# Create a dedicated directory for SQLite data so the appuser has write permissions 
+# ONLY to this directory, preventing them from modifying the python source files.
+RUN mkdir -p /app/data && chown -R 10001:10001 /app/data
+
+USER 10001:10001
 ENV PYTHONUNBUFFERED=1
+ENV CACHE_DB_PATH=/app/data/cache.db
+
 WORKDIR /app/Gemini-IRC-bot
 STOPSIGNAL SIGINT
 

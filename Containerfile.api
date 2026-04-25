@@ -1,9 +1,21 @@
 FROM docker.io/library/python:3.11-slim
+
+# Best Practice: Use a specific, high UID/GID to avoid host clashes, and disable shell access.
+RUN groupadd -g 10001 appuser && \
+    useradd -u 10001 -g appuser --no-create-home -s /sbin/nologin -c "App User" appuser
+
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+
+# Install dependencies
+RUN pip install --require-hashes --no-cache-dir -r requirements.txt
+
+# Best Practice: Application files should remain owned by root so the unprivileged user 
+# cannot modify the source code if compromised (prevents persistence/RCE escalation).
 COPY main.py .
 
+# Switch to the restricted user
+USER 10001:10001
 ENV PYTHONUNBUFFERED=1
 
 HEALTHCHECK --interval=15s --timeout=5s --start-period=5s --retries=3 \

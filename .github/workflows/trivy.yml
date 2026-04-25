@@ -1,0 +1,57 @@
+name: Trivy Container Vulnerability Scanner
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '00 05 * * 1'
+
+jobs:
+  build:
+    name: Build and Scan Containers
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build API image
+        run: docker build -t api:${{ github.sha }} -f Containerfile.api .
+
+      - name: Build Bot image
+        run: docker build -t bot:${{ github.sha }} -f Containerfile.bot .
+
+      - name: Run Trivy vulnerability scanner on API
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'api:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-results-api.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Run Trivy vulnerability scanner on Bot
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'bot:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-results-bot.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy API results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results-api.sarif'
+          category: trivy-api
+
+      - name: Upload Trivy Bot results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: 'trivy-results-bot.sarif'
+          category: trivy-bot

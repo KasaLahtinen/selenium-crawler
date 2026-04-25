@@ -1,0 +1,14 @@
+version: 2
+updates:
+  # Maintain dependencies for Python via pip
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
+  # Maintain base images for Containerfiles (Docker)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
