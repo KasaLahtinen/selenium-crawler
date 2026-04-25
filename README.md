@@ -59,8 +59,8 @@ Below is a breakdown of the key files and directories found in the root of the p
    ```
 
 2. **Configure the Environment**:
-   - Create a `.env` file in the root directory if you need to override compose variables.
-   - Edit the IRC configuration in `Gemini-IRC-bot/config.yaml` to set your bot's nickname, server, and channels to join.
+   - Copy `.env.example` to `.env` in the root directory and edit it to set your API keys and override compose variables.
+   - Copy `Gemini-IRC-bot/config.example.yaml` to `Gemini-IRC-bot/config.yaml` and edit it to set your bot's nickname, server, and channels to join.
 
 3. **Start the Stack**:
    Use the provided Python CLI tool to spin up the entire multi-container environment:
