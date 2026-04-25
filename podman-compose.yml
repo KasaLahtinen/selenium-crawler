@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  selenium:
+    image: docker.io/selenium/standalone-chromium:latest
+    shm_size: 2gb
+    ports:
+      - "4444:4444"
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Containerfile.api
+    env_file: .env
+    environment:
+      - SELENIUM_URL=http://selenium:4444/wd/hub
+    ports:
+      - "8000:8000"
+    depends_on:
+      - selenium
+    restart: unless-stopped
+
+  bot:
+    build:
+      context: .
+      dockerfile: Containerfile.bot
+    env_file: .env
+    environment:
+      - CRAWLER_API_URL=http://api:8000/resolve
+    volumes:
+      - ./Gemini-IRC-bot/config.yaml:/app/Gemini-IRC-bot/config.yaml:ro
+    depends_on:
+      - api
+    restart: unless-stopped

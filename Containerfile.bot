@@ -1,0 +1,10 @@
+FROM docker.io/library/python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY Gemini-IRC-bot/ ./Gemini-IRC-bot/
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app/Gemini-IRC-bot
+STOPSIGNAL SIGINT
+CMD ["python", "bot.py"]

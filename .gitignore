@@ -1,0 +1,61 @@
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Podman/Docker
+*.log
+.containers/
+
+# Selenium specific
+geckodriver.log
+ghostdriver.log
+chromedriver.log
+
+# Secrets & Credentials
+*.pem
+*.key
+*secret*
+
+# IDEs
+.vscode/
+.idea/
+.idx/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+Thumbs.db
+
+# Project specific
+Gemini-IRC-bot/config.yaml
