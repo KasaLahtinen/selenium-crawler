@@ -5,7 +5,7 @@ RUN groupadd -g 10001 appuser && \
     useradd -u 10001 -g appuser --no-create-home -s /sbin/nologin -c "App User" appuser
 
 WORKDIR /app
-COPY requirements.txt .
+COPY Gemini-IRC-bot/requirements.txt .
 RUN pip install --require-hashes --no-cache-dir -r requirements.txt
 
 # Best Practice: Source code should be owned by root and read-only for the appuser.
